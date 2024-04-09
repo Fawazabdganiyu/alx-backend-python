@@ -49,22 +49,27 @@ class TestAccessNestedMap(unittest.TestCase):
 
         self.assertEqual(str(err.exception), expected_msg)
 
-    class TestGetJson(unittest.TestCase):
-        """ Test get_json function class
+
+class TestGetJson(unittest.TestCase):
+    """ Test get_json function class
+    """
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+    ])
+    @patch('requests.get')
+    def test_get_json(
+            self,
+            test_url: str, test_payload: Dict[str, bool], mock_get: Mock
+    ) -> None:
+        """ Test that the expected result is returned
         """
-        @parameterized.expand([
-            ("http://example.com", {"payload": True}),
-            ("http://holberton.io", {"payload": False})
-        ])
-        def test_get_json(
-                self, test_url: str, test_payload: Dict[str, bool]
-        ) -> None:
-            """ Test that the expected result is returned
-            """
-            with patch('requests.get', new_callable=Mock) as mock_get:
-                mock_get.return_value.json.return_value = test_payload
+        mock_response = Mock()
+        mock_response.json.return_value = test_payload
 
-            output = get_json(test_url)
+        mock_get.return_value = mock_response
 
-            mock_get.assert_called_once_with(test_url)
-            self.assertEqual(output, test_payload)
+        output = get_json(test_url)
+
+        mock_get.assert_called_once_with(test_url)
+        self.assertEqual(output, test_payload)
