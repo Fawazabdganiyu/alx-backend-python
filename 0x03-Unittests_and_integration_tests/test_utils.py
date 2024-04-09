@@ -12,7 +12,7 @@ from typing import (
 import unittest
 from unittest.mock import patch, Mock
 
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -73,3 +73,26 @@ class TestGetJson(unittest.TestCase):
 
         mock_get.assert_called_once_with(test_url)
         self.assertEqual(output, test_payload)
+
+
+class TestMemoize(unittest.TestCase):
+    """ Test memoize decorator class
+    """
+    def test_memoize(self):
+        """ Test that the expected result is obtained
+        """
+        class TestClass:
+            """ TestClass
+            """
+            def a_method(self):
+                """ Test method
+                """
+                return 42
+
+            @memoize
+            def a_property(self):
+                """ Test property
+                """
+                return self.a_method()
+
+    pass
