@@ -82,7 +82,7 @@ class TestMemoize(unittest.TestCase):
         """ Test that the expected result is obtained
         """
         class TestClass:
-            """ TestClass
+            """ TestClass class
             """
             def a_method(self):
                 """ Test method
@@ -95,4 +95,9 @@ class TestMemoize(unittest.TestCase):
                 """
                 return self.a_method()
 
-    pass
+        with patch.object(TestClass, 'a_method',
+                          return_value=42) as mock_a_method:
+            test_obj = TestClass()
+            self.assertEqual(test_obj.a_property, 42)
+            self.assertEqual(test_obj.a_property, 42)
+            mock_a_method.assert_called_once()
